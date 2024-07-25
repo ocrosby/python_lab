@@ -14,6 +14,6 @@ install: uninstall
 	$(PYTHON) -m pip install -e .
 
 clean:
-	rm -rf __pycache__ || true
-	rm -rf *.egg-info || true
-	rm -f *.json || true
+	@rm -rf __pycache__ || true
+	@rm -rf *.egg-info || true
+	@rm -f *.json || true

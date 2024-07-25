@@ -66,6 +66,17 @@ def display_request_statistics(requests):
     # Extract durations from the requests
     durations = [ns_to_ms(req.elapsed_time_ns) for req in requests]
 
+    successful_requests = 0
+    failed_requests = 0
+
+    for req in requests:
+        # Assuming `req` has a `status_code` attribute and considering 2xx codes as successful
+        status = req.status_code()
+        if 200 <= status < 300:
+            successful_requests += 1
+        else:
+            failed_requests += 1
+
     # Calculate statistics
     min_duration = min(durations)
     max_duration = max(durations)
@@ -84,6 +95,8 @@ def display_request_statistics(requests):
     print("Request Statistics")
     print("=" * 50)
     print(f"Total Requests: {total_requests}")
+    print(f"Successful Requests: {successful_requests}")
+    print(f"Failed Requests: {failed_requests}")
     print(f"Total Elapsed Time: {total_elapsed_time} ms")
     print(f"Minimum Duration: {min_duration} ms")
     print(f"Maximum Duration: {max_duration} ms")
