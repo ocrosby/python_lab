@@ -1,0 +1,17 @@
+Method,Endpoint,Resource,Querystring,Encoding
+GET,https://jsonplaceholder.typicode.com,/comments,postId=1,utf-8
+GET,https://jsonplaceholder.typicode.com,/comments,?postId=1,utf-8
+GET,https://jsonplaceholder.typicode.com,/comments,postId=2,utf-8
+GET,https://jsonplaceholder.typicode.com,/comments,postId=3,utf-8
+GET,https://jsonplaceholder.typicode.com,/albums,,utf-8
+GET,https://jsonplaceholder.typicode.com,/posts,,utf-8
+GET,https://jsonplaceholder.typicode.com,/comments,,utf-8
+GET,https://jsonplaceholder.typicode.com,/photos,,utf-8
+GET,https://jsonplaceholder.typicode.com,/todos,,utf-8
+GET,https://jsonplaceholder.typicode.com,/users,,utf-8
+GET,https://jsonplaceholder.typicode.com,/posts/1,,utf-8
+GET,https://jsonplaceholder.typicode.com,/posts/1/comments,,utf-8
+POST,https://jsonplaceholder.typicode.com,/posts/1,,utf-8
+PUT,https://jsonplaceholder.typicode.com,/posts/1,,utf-8
+PATCH,https://jsonplaceholder.typicode.com,/posts/1,,utf-8
+DELETE,https://jsonplaceholder.typicode.com,/posts/1,,utf-8

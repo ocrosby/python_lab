@@ -1,74 +1,13 @@
-from urllib.parse import urljoin
-from datetime import datetime
-
+import csv
 import os
 import glob
+import urllib
 import time
 import json
 import http.client
 
-
-def create_postman_collection(requests, collection_name="Custom Collection", collection_description="Generated from CustomRequest"):
-    collection = {
-        "info": {
-            "name": collection_name,
-            "description": collection_description,
-            "_postman_id": "a unique identifier",
-            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-        },
-        "item": []
-    }
-
-    for req in requests:
-        request_data = {
-            "name": req.full_url(),
-            "request": {
-                "method": req.method,
-                "header": [{"key": k, "value": v} for k, v in req.headers.items()],
-                "url": {
-                    "raw": req.full_url(),
-                    "protocol": req.protocol,
-                    "host": [req.endpoint],
-                    "path": req.resource.strip("/").split("/"),
-                    "query": [{"key": k, "value": v} for k, v in parse_query_string(req.querystring).items()]
-                }
-            }
-        }
-        collection["item"].append(request_data)
-
-    return collection
-
-
-def parse_query_string(querystring):
-    """A simple function to parse query strings into a dictionary."""
-    if not querystring or querystring == "?":
-        return {}
-    queries = querystring.strip("?").split("&")
-    return dict(query.split("=") for query in queries if "=" in query)
-
-
-def save_collection_to_file(collection, filename="collection.json"):
-    with open(filename, "w") as file:
-        json.dump(collection, file, indent=4)
-
-
-def group_requests_by_status_code(requests):
-    status_code_groups = {}
-    for req in requests:
-        status_code = req.status_code()
-        if status_code not in status_code_groups:
-            status_code_groups[status_code] = []
-
-        status_code_groups[status_code].append(req)
-
-    return status_code_groups
-
-
-def generate_collections_by_status_code(requests):
-    grouped_requests = group_requests_by_status_code(requests)
-    for status_code, reqs in grouped_requests.items():
-        collection = create_postman_collection(reqs, f"Status Code {status_code} Collection")
-        save_collection_to_file(collection, f"collection_status_{status_code}.json")
+from urllib.parse import urljoin
+from datetime import datetime
 
 
 class CustomRequest:
@@ -256,74 +195,3 @@ class CustomRequest:
             return self.json_data
         else:
             raise ValueError("Response is not available. Make a request first using send().")
-
-
-def main(records):
-    # Delete collections from the last run.
-    for filename in glob.glob("collection_status_*.json"):
-        os.remove(filename)
-
-    headers = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    }
-
-    # See this as a reference: https://mockend.com/
-
-    requests = []
-
-    # Collect all request objects
-    for record in records:
-        method = record[0]
-        endpoint = record[1]
-        resource = record[2]
-        querystring = record[3]
-        encoding = record[4]
-
-        req = CustomRequest(method, endpoint, resource, encoding, headers, querystring)
-        requests.append(req)
-
-    # Send all requests
-    for req in requests:
-        try:
-            res = req.send()
-        except ValueError as e:
-            print(f"Error: {e}")
-            continue
-
-        print(req)
-
-    # Print all the requests
-    for req in requests:
-        print(req)
-
-    # Create the postman collection
-    generate_collections_by_status_code(requests)
-
-    print("Postman collections saved.")
-
-    print("Done.")
-
-
-if __name__ == "__main__":
-    records = [
-        ("GET", "https://jsonplaceholder.typicode.com", "/comments", "postId=1", "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/comments", "?postId=1", "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/comments", "postId=2", "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/comments", "postId=3", "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/albums", None, "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/posts", None, "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/comments", None, "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/photos", None, "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/todos", None, "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/users", None, "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/posts/1", None, "utf-8"),
-        ("GET", "https://jsonplaceholder.typicode.com", "/posts/1/comments", None, "utf-8"),
-        ("POST", "https://jsonplaceholder.typicode.com", "/posts/1", None, "utf-8"),
-        ("PUT", "https://jsonplaceholder.typicode.com", "/posts/1", None, "utf-8"),
-        ("PATCH", "https://jsonplaceholder.typicode.com", "/posts/1", None, "utf-8"),
-        ("DELETE", "https://jsonplaceholder.typicode.com", "/posts/1", None, "utf-8"),
-    ]
-
-    main(records)
-
