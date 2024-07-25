@@ -4,6 +4,8 @@ import os
 import glob
 import argparse
 
+import dex.utils
+
 from dex.utils.customrequest import CustomRequest
 from dex.utils.postman import generate_collections_by_status_code
 from dex.utils.translation import read_records_from_csv
