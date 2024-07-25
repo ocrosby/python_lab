@@ -2,8 +2,8 @@ PYTHON=python3.12
 
 .PHONY: install run clean uninstall
 
-run: install
-	dex ./records.csv
+run:
+	$(PYTHON) dex.py ./records.csv
 
 uninstall: clean
 	$(PYTHON) -m pip uninstall -y dex
@@ -14,5 +14,6 @@ install: uninstall
 	$(PYTHON) -m pip install -e .
 
 clean:
+	rm -rf __pycache__ || true
 	rm -rf *.egg-info || true
 	rm -f *.json || true
