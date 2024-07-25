@@ -17,8 +17,10 @@ DEFAULT_HEADERS = {
 
 def batch_print_requests(requests):
     """Print all requests in the batch"""
-    for req in requests:
-        print(req)
+    with open('requests.log', 'a') as log_file:
+        for req in requests:
+            print(req)
+            log_file.write(str(req) + '\n')
 
 
 def collect_reqeusts_from_records(headers, records) -> list:
@@ -50,8 +52,9 @@ def batch_send_requests(requests):
 
 
 def cleanup_collections():
-    # Delete collections from the last run.
+    """Remove all collection status files"""
     for filename in glob.glob("collection_status_*.json"):
+        print(f"Removing {filename} ...")
         os.remove(filename)
 
 
