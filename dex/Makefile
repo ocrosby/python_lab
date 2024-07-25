@@ -16,4 +16,4 @@ install: uninstall
 clean:
 	@rm -rf __pycache__ || true
 	@rm -rf *.egg-info || true
-	@rm -f *.json || true
+	@rm -f output/*.json || true
