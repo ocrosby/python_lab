@@ -3,6 +3,7 @@
 import os
 import glob
 import argparse
+import statistics
 
 from customrequest import CustomRequest
 from postman import generate_collections_by_status_code
@@ -12,24 +13,6 @@ DEFAULT_HEADERS = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 }
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Send a batch of requests to a target servers.")
-    parser.add_argument("input_file", type=str, help="Path to the input CSV file containing request records.")
-
-    args = parser.parse_args()
-
-    cleanup_collections()
-
-    records = read_records_from_csv(args.input_file)
-    requests = collect_reqeusts_from_records(DEFAULT_HEADERS, records)
-
-    batch_send_requests(requests)
-    batch_print_requests(requests)
-    generate_collections_by_status_code(requests)
-
-    print("Done.")
 
 
 def batch_print_requests(requests):
@@ -70,6 +53,63 @@ def cleanup_collections():
     # Delete collections from the last run.
     for filename in glob.glob("collection_status_*.json"):
         os.remove(filename)
+
+
+def ns_to_ms(nanoseconds) -> int:
+    return int(round(nanoseconds / 1_000_000))
+
+
+def display_request_statistics(requests):
+    # Extract durations from the requests
+    durations = [ns_to_ms(req.elapsed_time_ns) for req in requests]
+
+    # Calculate statistics
+    min_duration = min(durations)
+    max_duration = max(durations)
+    mean_duration = statistics.mean(durations)
+    median_duration = statistics.median(durations)
+    mode_duration = statistics.mode(durations)
+    std_deviation = statistics.stdev(durations)
+    variance = statistics.variance(durations)
+
+    # Summarize total requests and elapsed time
+    total_requests = len(requests)
+    total_elapsed_time = sum(durations)
+
+    # Display statistics
+    print()
+    print("Request Statistics")
+    print("=" * 50)
+    print(f"Total Requests: {total_requests}")
+    print(f"Total Elapsed Time: {total_elapsed_time} ms")
+    print(f"Minimum Duration: {min_duration} ms")
+    print(f"Maximum Duration: {max_duration} ms")
+    print(f"Mean Duration: {mean_duration} ms")
+    print(f"Median Duration: {median_duration:.2f} ms")
+    print(f"Mode Duration: {mode_duration} ms")
+    print(f"Standard Deviation: {std_deviation:.2f}")
+    print(f"Variance: {variance:.2f}")
+    print("=" * 50)
+    print()
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Send a batch of requests to a target servers.")
+    parser.add_argument("input_file", type=str, help="Path to the input CSV file containing request records.")
+
+    args = parser.parse_args()
+
+    cleanup_collections()
+
+    records = read_records_from_csv(args.input_file)
+    requests = collect_reqeusts_from_records(DEFAULT_HEADERS, records)
+
+    batch_send_requests(requests)
+    batch_print_requests(requests)
+    display_request_statistics(requests)
+    generate_collections_by_status_code(requests)
+
+    print("Done.")
 
 
 if __name__ == "__main__":
