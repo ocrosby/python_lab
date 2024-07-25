@@ -15,3 +15,4 @@ POST,https://jsonplaceholder.typicode.com,/posts/1,,utf-8
 PUT,https://jsonplaceholder.typicode.com,/posts/1,,utf-8
 PATCH,https://jsonplaceholder.typicode.com,/posts/1,,utf-8
 DELETE,https://jsonplaceholder.typicode.com,/posts/1,,utf-8
+GET,https://jsonplaceholder.typicode.com,/posts1/comments,,utf-8
