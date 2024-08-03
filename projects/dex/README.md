@@ -6,6 +6,10 @@ This utility is an attempt to automate a bit of that.
 
 ## Installation
 
+### Install the latest version of Python
+
+
+
 Create a virtual directory:
 
 ```Shell
