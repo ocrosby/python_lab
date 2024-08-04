@@ -1,0 +1,117 @@
+"""
+This module contains the Pytest configuration.
+"""
+
+import os
+
+import pytest
+
+
+# Pytest Hooks
+
+
+def pytest_configure(config):
+    """
+    Configure Pytest
+
+    :param config: Pytest configuration
+    """
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """
+    Finish Pytest session
+
+    :param session: Pytest session
+    :param exitstatus: Exit status
+    """
+
+# Pytest-BDD Hooks
+
+
+def pytest_bdd_before_scenario(request, feature, scenario):
+    """
+    Before scenario hook
+
+    :param request: Pytest request
+    :param feature: Feature
+    :param scenario: Scenario
+    """
+
+
+def pytest_bdd_after_scenario(request, feature, scenario):
+    """
+    After scenario hook
+
+    :param request: Pytest request
+    :param feature: Feature
+    :param scenario: Scenario
+    """
+
+
+def pytest_bdd_step_error(
+        request,
+        feature,
+        scenario,
+        step,
+        step_func,
+        step_func_args,
+        exception
+):
+    """
+    Handle step error
+
+    :param request: Pytest request
+    :param feature: Feature
+    :param scenario: Scenario
+    :param step: Step
+    :param step_func: Step function
+    :param step_func_args: Step function arguments
+    :param exception: Exception
+    """
+
+
+def pytest_bdd_before_step(request, feature, scenario, step, step_func):
+    """
+    Before step hook
+
+    :param request: Pytest request
+    :param feature: Feature
+    :param scenario: Scenario
+    :param step: Step
+    :param step_func: Step function
+    """
+
+
+def pytest_bdd_after_step(request, feature, scenario, step, step_func):
+    """
+    After step hook
+
+    :param request: Pytest request
+    :param feature: Feature
+    :param scenario: Scenario
+    :param step: Step
+    :param step_func: Step function
+    """
+
+
+def pytest_bdd_step_func_lookup_error(request, feature, scenario, step, exception):
+    """
+    Handle step function lookup error
+
+    :param request: Pytest request
+    :param feature: Feature
+    :param scenario: Scenario
+    :param step: Step
+    :param exception: Exception
+    """
+
+
+@pytest.fixture(scope="session")
+def postgres_container():
+    """
+    Setup the Postgres container
+
+    :return: Postgres container
+    """
+

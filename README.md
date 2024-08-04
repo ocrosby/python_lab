@@ -20,3 +20,8 @@ monorepo/
 ```
 
 Note: Each project should have its own virtual environment and requirements file.
+
+
+## References
+
+- [Project Structure](https://docs.python-guide.org/writing/structure/)
